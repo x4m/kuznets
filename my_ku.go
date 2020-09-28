@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/hex"
 	"fmt"
+	"time"
 )
 
 func main() {
@@ -14,5 +15,16 @@ func main() {
 	ku := NewKuznets(bytes.NewReader(dataSlice), keySlice)
 	cyphered := make([]byte, 16)
 	ku.Read(cyphered)
-	fmt.Print("Ku(" + data + ") = " + hex.EncodeToString(cyphered) + "\n")
+	fmt.Println("Ku(" + data + ") = " + hex.EncodeToString(cyphered) + "\n")
+
+	ku = NewKuznets(randomReader{}, keySlice)
+
+	start := time.Now()
+
+	for i := 0; i < 1024*1024/16; i++ {
+		ku.Read(cyphered)
+	}
+	elapsed := time.Since(start)
+
+	fmt.Println("Time to encrypt 1Mb ", elapsed)
 }

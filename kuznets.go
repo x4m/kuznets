@@ -2,6 +2,7 @@ package main
 
 import (
 	"io"
+	"math/rand"
 )
 
 var sbox = [0x100]byte{
@@ -202,4 +203,11 @@ func (k kuznets) Read(p []byte) (n int, err error) {
 
 	copy(p, b[:])
 	return 16, nil
+}
+
+type randomReader struct {
+}
+
+func (_ randomReader) Read(p []byte) (n int, err error) {
+	return rand.Read(p)
 }
