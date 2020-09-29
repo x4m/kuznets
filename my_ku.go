@@ -21,10 +21,10 @@ func main() {
 
 	start := time.Now()
 
-	for i := 0; i < 1024*1024/16; i++ {
+	for i := 0; i < 100*1024*1024/16; i++ {
 		ku.Read(cyphered)
 	}
 	elapsed := time.Since(start)
 
-	fmt.Println("Time to encrypt 1Mb ", elapsed)
+	fmt.Println("Time to encrypt 100Mb ", elapsed)
 }
