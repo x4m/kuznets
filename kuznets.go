@@ -49,7 +49,21 @@ func s(a [16]byte) [16]byte {
 	bytes[15] = sbox[a[15]]
 	return bytes
 }
+
+var gfm_array [256][256]byte
+
+func init() {
+	for i := 0; i < 256; i++ {
+		for o := 0; o < 256; o++ {
+			gfm_array[i][o] = gfm_manual(byte(i), byte(o))
+		}
+	}
+}
 func gfm(x byte, y byte) byte {
+	return gfm_array[x][y]
+}
+
+func gfm_manual(x byte, y byte) byte {
 	z := byte(0)
 	for y != 0 {
 		if y&1 != 0 {
@@ -80,16 +94,16 @@ func lv128v8(a [16]byte) byte {
 		gfm(16, a[3]) ^
 		gfm(194, a[4]) ^
 		gfm(192, a[5]) ^
-		gfm(1, a[6]) ^
+		a[6] ^
 		gfm(251, a[7]) ^
-		gfm(1, a[8]) ^
+		a[8] ^
 		gfm(192, a[9]) ^
 		gfm(194, a[10]) ^
 		gfm(16, a[11]) ^
 		gfm(133, a[12]) ^
 		gfm(32, a[13]) ^
 		gfm(148, a[14]) ^
-		gfm(1, a[15])
+		a[15]
 }
 
 func r(a [16]byte) [16]byte {
