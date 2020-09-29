@@ -78,12 +78,7 @@ func gfm_manual(x byte, y byte) byte {
 
 var gfc = [16]byte{148, 32, 133, 16, 194, 192, 1, 251, 1, 192, 194, 16, 133, 32, 148, 1}
 
-func lv128v8(a [16]byte) byte {
-	//var b byte = 0
-	//for i := 0; i < 16; i++ {
-	//	b ^= gfm(a[i], gfc[i])
-	//}
-	//return b
+func lv128v8(a *[16]byte) byte {
 	return gfm(148, a[0]) ^
 		gfm(32, a[1]) ^
 		gfm(133, a[2]) ^
@@ -102,32 +97,44 @@ func lv128v8(a [16]byte) byte {
 		a[15]
 }
 
-func r(a [16]byte) [16]byte {
-	var bytes [16]byte
+func r(a *[16]byte){
 	var a15 = lv128v8(a)
-	bytes[0] = a15
-	bytes[1] = a[0]
-	bytes[2] = a[1]
-	bytes[3] = a[2]
-	bytes[4] = a[3]
-	bytes[5] = a[4]
-	bytes[6] = a[5]
-	bytes[7] = a[6]
-	bytes[8] = a[7]
-	bytes[9] = a[8]
-	bytes[10] = a[9]
-	bytes[11] = a[10]
-	bytes[12] = a[11]
-	bytes[13] = a[12]
-	bytes[14] = a[13]
-	bytes[15] = a[14]
 
-	return bytes // append([]byte{a15}, a[:15]...)
+	a[15] = a[14]
+	a[14] = a[13]
+	a[13] = a[12]
+	a[12] = a[11]
+	a[11] = a[10]
+	a[10] = a[9]
+	a[9] = a[8]
+	a[8] = a[7]
+	a[7] = a[6]
+	a[6] = a[5]
+	a[5] = a[4]
+	a[4] = a[3]
+	a[3] = a[2]
+	a[2] = a[1]
+	a[1] = a[0]
+	a[0] = a15
 }
 
-func l(a [16]byte) [16]byte {
-	// LISPers gonna LISP
-	return r(r(r(r(r(r(r(r(r(r(r(r(r(r(r(r(a))))))))))))))))
+func l(a *[16]byte) {
+	r(a)
+	r(a)
+	r(a)
+	r(a)
+	r(a)
+	r(a)
+	r(a)
+	r(a)
+	r(a)
+	r(a)
+	r(a)
+	r(a)
+	r(a)
+	r(a)
+	r(a)
+	r(a)
 }
 
 func keys(master [32]byte) (keys [10][16]byte) {
@@ -144,11 +151,11 @@ func keys(master [32]byte) (keys [10][16]byte) {
 		var c [16]byte
 		c[15] = i
 
-		c = l(c)
+		l(&c)
 		z = x
 		xx(&z, c)
 		s(&z)
-		z = l(z)
+		l(&z)
 		xx(&z, y)
 		y = x
 		x = z
@@ -185,31 +192,31 @@ func (k kuznets) Read(p []byte) (n int, err error) {
 
 	xx(&b, k.keys[0])
 	s(&b)
-	b = l(b)
+	l(&b)
 	xx(&b, k.keys[1])
 	s(&b)
-	b = l(b)
+	l(&b)
 	xx(&b, k.keys[2])
 	s(&b)
-	b = l(b)
+	l(&b)
 	xx(&b, k.keys[3])
 	s(&b)
-	b = l(b)
+	l(&b)
 	xx(&b, k.keys[4])
 	s(&b)
-	b = l(b)
+	l(&b)
 	xx(&b, k.keys[5])
 	s(&b)
-	b = l(b)
+	l(&b)
 	xx(&b, k.keys[6])
 	s(&b)
-	b = l(b)
+	l(&b)
 	xx(&b, k.keys[7])
 	s(&b)
-	b = l(b)
+	l(&b)
 	xx(&b, k.keys[8])
 	s(&b)
-	b = l(b)
+	l(&b)
 	xx(&b, k.keys[9])
 
 	copy(p, b[:])
