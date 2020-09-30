@@ -16,6 +16,7 @@ func main() {
 	cyphered := make([]byte, 16)
 	ku.Read(cyphered)
 	fmt.Println("Ku(" + data + ") = " + hex.EncodeToString(cyphered) + "\n")
+	//return
 
 	ku = NewKuznets(randomReader{}, keySlice)
 

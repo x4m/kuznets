@@ -1,5 +1,6 @@
 package main
 
+import "C"
 import (
 	"io"
 	"math/rand"
@@ -46,6 +47,37 @@ func s(a *[16]byte) {
 	a[15] = sbox[a[15]]
 }
 
+var ls_array [256][16][16]byte
+
+
+
+func ls(a *[16]byte) {
+	var res = ls_array[a[0]][0]
+	//rp := unsafe.Pointer(&res)
+	for i := 1; i < 16; i++ {
+		//xorBytesAVX(&res, &res, &ls_array[a[i]][i], 16)
+		xx(&res, ls_array[a[i]][i])
+		//C.cxor(rp, unsafe.Pointer(&ls_array[a[i]][i]))
+		//C.cxor1(&res, &ls_array[a[i]][i])
+	}
+	/*xx(&res, ls_array[a[1]][1])
+	xx(&res, ls_array[a[2]][2])
+	xx(&res, ls_array[a[3]][3])
+	xx(&res, ls_array[a[4]][4])
+	xx(&res, ls_array[a[5]][5])
+	xx(&res, ls_array[a[6]][6])
+	xx(&res, ls_array[a[7]][7])
+	xx(&res, ls_array[a[8]][8])
+	xx(&res, ls_array[a[9]][9])
+	xx(&res, ls_array[a[10]][10])
+	xx(&res, ls_array[a[11]][11])
+	xx(&res, ls_array[a[12]][12])
+	xx(&res, ls_array[a[13]][13])
+	xx(&res, ls_array[a[14]][14])
+	xx(&res, ls_array[a[15]][15])*/
+	*a = res
+}
+
 var gfm_array [256][256]byte
 
 func init() {
@@ -54,7 +86,18 @@ func init() {
 			gfm_array[i][o] = gfm_manual(byte(i), byte(o))
 		}
 	}
+
+	for iteration := 0; iteration < 16; iteration++ {
+		for i := 0; i < 256; i++ {
+			var bytes [16]byte
+			bytes[iteration] = sbox[i]
+			//s(&bytes)
+			l(&bytes)
+			ls_array[i][iteration] = bytes
+		}
+	}
 }
+
 func gfm(x byte, y byte) byte {
 	return gfm_array[x][y]
 }
@@ -97,7 +140,7 @@ func lv128v8(a *[16]byte) byte {
 		a[15]
 }
 
-func r(a *[16]byte){
+func r(a *[16]byte) {
 	var a15 = lv128v8(a)
 
 	a[15] = a[14]
@@ -191,32 +234,23 @@ func (k kuznets) Read(p []byte) (n int, err error) {
 	copy(b[:], p)
 
 	xx(&b, k.keys[0])
-	s(&b)
-	l(&b)
+	ls(&b)
 	xx(&b, k.keys[1])
-	s(&b)
-	l(&b)
+	ls(&b)
 	xx(&b, k.keys[2])
-	s(&b)
-	l(&b)
+	ls(&b)
 	xx(&b, k.keys[3])
-	s(&b)
-	l(&b)
+	ls(&b)
 	xx(&b, k.keys[4])
-	s(&b)
-	l(&b)
+	ls(&b)
 	xx(&b, k.keys[5])
-	s(&b)
-	l(&b)
+	ls(&b)
 	xx(&b, k.keys[6])
-	s(&b)
-	l(&b)
+	ls(&b)
 	xx(&b, k.keys[7])
-	s(&b)
-	l(&b)
+	ls(&b)
 	xx(&b, k.keys[8])
-	s(&b)
-	l(&b)
+	ls(&b)
 	xx(&b, k.keys[9])
 
 	copy(p, b[:])
