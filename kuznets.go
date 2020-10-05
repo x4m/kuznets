@@ -178,18 +178,24 @@ func keys(master [32]byte) (keys [10][16]byte) {
 	return
 }
 
-type kuznets struct {
+type Kuznets struct {
 	internal io.Reader
 	keys     [10][16]byte
 }
 
-func NewKuznets(reader io.Reader, masterKey []byte) io.Reader {
+func NewKuznets(masterKey []byte) Kuznets {
 	var fixed [32]byte
 	copy(fixed[:], masterKey)
-	return kuznets{reader, keys(fixed)}
+	return Kuznets{nil, keys(fixed)}
 }
 
-func (k kuznets) Read(p []byte) (n int, err error) {
+func NewKuznetsReader(reader io.Reader, masterKey []byte) io.Reader {
+	var fixed [32]byte
+	copy(fixed[:], masterKey)
+	return Kuznets{reader, keys(fixed)}
+}
+
+func (k Kuznets) Read(p []byte) (n int, err error) {
 	if len(p) != 16 {
 		panic("TODO")
 	}
@@ -200,11 +206,76 @@ func (k kuznets) Read(p []byte) (n int, err error) {
 	}
 	copy(b[:], p)
 
+	b = k.EncryptBlock(b)
+
+	copy(p, b[:])
+	return 16, nil
+}
+
+func (k Kuznets) EncryptBlock(b [16]byte) [16]byte {
 	for i := 0; i < 9; i++ {
 		*(*uint64)(unsafe.Pointer(&b[0])) = *(*uint64)(unsafe.Pointer(&b[0])) ^ *(*uint64)(unsafe.Pointer(&k.keys[i][0]))
 		*(*uint64)(unsafe.Pointer(&b[8])) = *(*uint64)(unsafe.Pointer(&b[8])) ^ *(*uint64)(unsafe.Pointer(&k.keys[i][8]))
 		a1 := b
 		b = ls_array[0][a1[0]]
+		*(*uint64)(unsafe.Pointer(&b[0])) = *(*uint64)(unsafe.Pointer(&b[0])) ^ *(*uint64)(unsafe.Pointer(&ls_array[1][a1[1]][0]))
+		*(*uint64)(unsafe.Pointer(&b[8])) = *(*uint64)(unsafe.Pointer(&b[8])) ^ *(*uint64)(unsafe.Pointer(&ls_array[1][a1[1]][8]))
+
+		*(*uint64)(unsafe.Pointer(&b[0])) = *(*uint64)(unsafe.Pointer(&b[0])) ^ *(*uint64)(unsafe.Pointer(&ls_array[2][a1[2]][0]))
+		*(*uint64)(unsafe.Pointer(&b[8])) = *(*uint64)(unsafe.Pointer(&b[8])) ^ *(*uint64)(unsafe.Pointer(&ls_array[2][a1[2]][8]))
+
+		*(*uint64)(unsafe.Pointer(&b[0])) = *(*uint64)(unsafe.Pointer(&b[0])) ^ *(*uint64)(unsafe.Pointer(&ls_array[3][a1[3]][0]))
+		*(*uint64)(unsafe.Pointer(&b[8])) = *(*uint64)(unsafe.Pointer(&b[8])) ^ *(*uint64)(unsafe.Pointer(&ls_array[3][a1[3]][8]))
+
+		*(*uint64)(unsafe.Pointer(&b[0])) = *(*uint64)(unsafe.Pointer(&b[0])) ^ *(*uint64)(unsafe.Pointer(&ls_array[4][a1[4]][0]))
+		*(*uint64)(unsafe.Pointer(&b[8])) = *(*uint64)(unsafe.Pointer(&b[8])) ^ *(*uint64)(unsafe.Pointer(&ls_array[4][a1[4]][8]))
+
+		*(*uint64)(unsafe.Pointer(&b[0])) = *(*uint64)(unsafe.Pointer(&b[0])) ^ *(*uint64)(unsafe.Pointer(&ls_array[5][a1[5]][0]))
+		*(*uint64)(unsafe.Pointer(&b[8])) = *(*uint64)(unsafe.Pointer(&b[8])) ^ *(*uint64)(unsafe.Pointer(&ls_array[5][a1[5]][8]))
+
+		*(*uint64)(unsafe.Pointer(&b[0])) = *(*uint64)(unsafe.Pointer(&b[0])) ^ *(*uint64)(unsafe.Pointer(&ls_array[6][a1[6]][0]))
+		*(*uint64)(unsafe.Pointer(&b[8])) = *(*uint64)(unsafe.Pointer(&b[8])) ^ *(*uint64)(unsafe.Pointer(&ls_array[6][a1[6]][8]))
+
+		*(*uint64)(unsafe.Pointer(&b[0])) = *(*uint64)(unsafe.Pointer(&b[0])) ^ *(*uint64)(unsafe.Pointer(&ls_array[7][a1[7]][0]))
+		*(*uint64)(unsafe.Pointer(&b[8])) = *(*uint64)(unsafe.Pointer(&b[8])) ^ *(*uint64)(unsafe.Pointer(&ls_array[7][a1[7]][8]))
+
+		*(*uint64)(unsafe.Pointer(&b[0])) = *(*uint64)(unsafe.Pointer(&b[0])) ^ *(*uint64)(unsafe.Pointer(&ls_array[8][a1[8]][0]))
+		*(*uint64)(unsafe.Pointer(&b[8])) = *(*uint64)(unsafe.Pointer(&b[8])) ^ *(*uint64)(unsafe.Pointer(&ls_array[8][a1[8]][8]))
+
+ 		*(*uint64)(unsafe.Pointer(&b[0])) = *(*uint64)(unsafe.Pointer(&b[0])) ^ *(*uint64)(unsafe.Pointer(&ls_array[9][a1[9]][0]))
+		*(*uint64)(unsafe.Pointer(&b[8])) = *(*uint64)(unsafe.Pointer(&b[8])) ^ *(*uint64)(unsafe.Pointer(&ls_array[9][a1[9]][8]))
+
+		*(*uint64)(unsafe.Pointer(&b[0])) = *(*uint64)(unsafe.Pointer(&b[0])) ^ *(*uint64)(unsafe.Pointer(&ls_array[10][a1[10]][0]))
+		*(*uint64)(unsafe.Pointer(&b[8])) = *(*uint64)(unsafe.Pointer(&b[8])) ^ *(*uint64)(unsafe.Pointer(&ls_array[10][a1[10]][8]))
+
+		*(*uint64)(unsafe.Pointer(&b[0])) = *(*uint64)(unsafe.Pointer(&b[0])) ^ *(*uint64)(unsafe.Pointer(&ls_array[11][a1[11]][0]))
+		*(*uint64)(unsafe.Pointer(&b[8])) = *(*uint64)(unsafe.Pointer(&b[8])) ^ *(*uint64)(unsafe.Pointer(&ls_array[11][a1[11]][8]))
+
+		*(*uint64)(unsafe.Pointer(&b[0])) = *(*uint64)(unsafe.Pointer(&b[0])) ^ *(*uint64)(unsafe.Pointer(&ls_array[12][a1[12]][0]))
+		*(*uint64)(unsafe.Pointer(&b[8])) = *(*uint64)(unsafe.Pointer(&b[8])) ^ *(*uint64)(unsafe.Pointer(&ls_array[12][a1[12]][8]))
+
+		*(*uint64)(unsafe.Pointer(&b[0])) = *(*uint64)(unsafe.Pointer(&b[0])) ^ *(*uint64)(unsafe.Pointer(&ls_array[13][a1[13]][0]))
+		*(*uint64)(unsafe.Pointer(&b[8])) = *(*uint64)(unsafe.Pointer(&b[8])) ^ *(*uint64)(unsafe.Pointer(&ls_array[13][a1[13]][8]))
+
+		*(*uint64)(unsafe.Pointer(&b[0])) = *(*uint64)(unsafe.Pointer(&b[0])) ^ *(*uint64)(unsafe.Pointer(&ls_array[14][a1[14]][0]))
+		*(*uint64)(unsafe.Pointer(&b[8])) = *(*uint64)(unsafe.Pointer(&b[8])) ^ *(*uint64)(unsafe.Pointer(&ls_array[14][a1[14]][8]))
+
+		*(*uint64)(unsafe.Pointer(&b[0])) = *(*uint64)(unsafe.Pointer(&b[0])) ^ *(*uint64)(unsafe.Pointer(&ls_array[15][a1[15]][0]))
+		*(*uint64)(unsafe.Pointer(&b[8])) = *(*uint64)(unsafe.Pointer(&b[8])) ^ *(*uint64)(unsafe.Pointer(&ls_array[15][a1[15]][8]))
+
+		// At this point I really wish GO had macro functions
+	}
+	*(*uint64)(unsafe.Pointer(&b[0])) = *(*uint64)(unsafe.Pointer(&b[0])) ^ *(*uint64)(unsafe.Pointer(&k.keys[9][0]))
+	*(*uint64)(unsafe.Pointer(&b[8])) = *(*uint64)(unsafe.Pointer(&b[8])) ^ *(*uint64)(unsafe.Pointer(&k.keys[9][8]))
+	return b
+}
+
+func (k Kuznets) EncryptBlockRef(b *[16]byte) {
+	for i := 0; i < 9; i++ {
+		*(*uint64)(unsafe.Pointer(&b[0])) = *(*uint64)(unsafe.Pointer(&b[0])) ^ *(*uint64)(unsafe.Pointer(&k.keys[i][0]))
+		*(*uint64)(unsafe.Pointer(&b[8])) = *(*uint64)(unsafe.Pointer(&b[8])) ^ *(*uint64)(unsafe.Pointer(&k.keys[i][8]))
+		a1 := b
+		*b = ls_array[0][a1[0]]
 		for o := 1; o < 16; o++ {
 			*(*uint64)(unsafe.Pointer(&b[0])) = *(*uint64)(unsafe.Pointer(&b[0])) ^ *(*uint64)(unsafe.Pointer(&ls_array[o][a1[o]][0]))
 			*(*uint64)(unsafe.Pointer(&b[8])) = *(*uint64)(unsafe.Pointer(&b[8])) ^ *(*uint64)(unsafe.Pointer(&ls_array[o][a1[o]][8]))
@@ -212,9 +283,6 @@ func (k kuznets) Read(p []byte) (n int, err error) {
 	}
 	*(*uint64)(unsafe.Pointer(&b[0])) = *(*uint64)(unsafe.Pointer(&b[0])) ^ *(*uint64)(unsafe.Pointer(&k.keys[9][0]))
 	*(*uint64)(unsafe.Pointer(&b[8])) = *(*uint64)(unsafe.Pointer(&b[8])) ^ *(*uint64)(unsafe.Pointer(&k.keys[9][8]))
-
-	copy(p, b[:])
-	return 16, nil
 }
 
 type randomReader struct {
