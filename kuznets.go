@@ -216,52 +216,56 @@ func (k Kuznets) EncryptBlock(b [16]byte) [16]byte {
 	for i := 0; i < 9; i++ {
 		*(*uint64)(unsafe.Pointer(&b[0])) = *(*uint64)(unsafe.Pointer(&b[0])) ^ *(*uint64)(unsafe.Pointer(&k.keys[i][0]))
 		*(*uint64)(unsafe.Pointer(&b[8])) = *(*uint64)(unsafe.Pointer(&b[8])) ^ *(*uint64)(unsafe.Pointer(&k.keys[i][8]))
-		a1 := b
-		b = ls_array[0][a1[0]]
-		*(*uint64)(unsafe.Pointer(&b[0])) = *(*uint64)(unsafe.Pointer(&b[0])) ^ *(*uint64)(unsafe.Pointer(&ls_array[1][a1[1]][0]))
-		*(*uint64)(unsafe.Pointer(&b[8])) = *(*uint64)(unsafe.Pointer(&b[8])) ^ *(*uint64)(unsafe.Pointer(&ls_array[1][a1[1]][8]))
 
-		*(*uint64)(unsafe.Pointer(&b[0])) = *(*uint64)(unsafe.Pointer(&b[0])) ^ *(*uint64)(unsafe.Pointer(&ls_array[2][a1[2]][0]))
-		*(*uint64)(unsafe.Pointer(&b[8])) = *(*uint64)(unsafe.Pointer(&b[8])) ^ *(*uint64)(unsafe.Pointer(&ls_array[2][a1[2]][8]))
+		b1 := ls_array[0][b[0]]
+		b2 := ls_array[1][b[1]]
+		b3 := ls_array[2][b[2]]
+		b4 := ls_array[3][b[3]]
+		b5 := ls_array[4][b[4]]
+		b6 := ls_array[5][b[5]]
+		b7 := ls_array[6][b[6]]
+		b8 := ls_array[7][b[7]]
+		b9 := ls_array[8][b[8]]
+		b10 := ls_array[9][b[9]]
+		b11 := ls_array[10][b[10]]
+		b12 := ls_array[11][b[11]]
+		b13 := ls_array[12][b[12]]
+		b14 := ls_array[13][b[13]]
+		b15 := ls_array[14][b[14]]
+		b16 := ls_array[15][b[15]]
+		*(*uint64)(unsafe.Pointer(&b[0])) = *(*uint64)(unsafe.Pointer(&b1[0])) ^
+			*(*uint64)(unsafe.Pointer(&b2[0])) ^
+			*(*uint64)(unsafe.Pointer(&b3[0])) ^
+			*(*uint64)(unsafe.Pointer(&b4[0])) ^
+			*(*uint64)(unsafe.Pointer(&b5[0])) ^
+			*(*uint64)(unsafe.Pointer(&b6[0])) ^
+			*(*uint64)(unsafe.Pointer(&b7[0])) ^
+			*(*uint64)(unsafe.Pointer(&b8[0])) ^
+			*(*uint64)(unsafe.Pointer(&b9[0])) ^
+			*(*uint64)(unsafe.Pointer(&b10[0])) ^
+			*(*uint64)(unsafe.Pointer(&b11[0])) ^
+			*(*uint64)(unsafe.Pointer(&b12[0])) ^
+			*(*uint64)(unsafe.Pointer(&b13[0])) ^
+			*(*uint64)(unsafe.Pointer(&b14[0])) ^
+			*(*uint64)(unsafe.Pointer(&b15[0])) ^
+			*(*uint64)(unsafe.Pointer(&b16[0]))
 
-		*(*uint64)(unsafe.Pointer(&b[0])) = *(*uint64)(unsafe.Pointer(&b[0])) ^ *(*uint64)(unsafe.Pointer(&ls_array[3][a1[3]][0]))
-		*(*uint64)(unsafe.Pointer(&b[8])) = *(*uint64)(unsafe.Pointer(&b[8])) ^ *(*uint64)(unsafe.Pointer(&ls_array[3][a1[3]][8]))
-
-		*(*uint64)(unsafe.Pointer(&b[0])) = *(*uint64)(unsafe.Pointer(&b[0])) ^ *(*uint64)(unsafe.Pointer(&ls_array[4][a1[4]][0]))
-		*(*uint64)(unsafe.Pointer(&b[8])) = *(*uint64)(unsafe.Pointer(&b[8])) ^ *(*uint64)(unsafe.Pointer(&ls_array[4][a1[4]][8]))
-
-		*(*uint64)(unsafe.Pointer(&b[0])) = *(*uint64)(unsafe.Pointer(&b[0])) ^ *(*uint64)(unsafe.Pointer(&ls_array[5][a1[5]][0]))
-		*(*uint64)(unsafe.Pointer(&b[8])) = *(*uint64)(unsafe.Pointer(&b[8])) ^ *(*uint64)(unsafe.Pointer(&ls_array[5][a1[5]][8]))
-
-		*(*uint64)(unsafe.Pointer(&b[0])) = *(*uint64)(unsafe.Pointer(&b[0])) ^ *(*uint64)(unsafe.Pointer(&ls_array[6][a1[6]][0]))
-		*(*uint64)(unsafe.Pointer(&b[8])) = *(*uint64)(unsafe.Pointer(&b[8])) ^ *(*uint64)(unsafe.Pointer(&ls_array[6][a1[6]][8]))
-
-		*(*uint64)(unsafe.Pointer(&b[0])) = *(*uint64)(unsafe.Pointer(&b[0])) ^ *(*uint64)(unsafe.Pointer(&ls_array[7][a1[7]][0]))
-		*(*uint64)(unsafe.Pointer(&b[8])) = *(*uint64)(unsafe.Pointer(&b[8])) ^ *(*uint64)(unsafe.Pointer(&ls_array[7][a1[7]][8]))
-
-		*(*uint64)(unsafe.Pointer(&b[0])) = *(*uint64)(unsafe.Pointer(&b[0])) ^ *(*uint64)(unsafe.Pointer(&ls_array[8][a1[8]][0]))
-		*(*uint64)(unsafe.Pointer(&b[8])) = *(*uint64)(unsafe.Pointer(&b[8])) ^ *(*uint64)(unsafe.Pointer(&ls_array[8][a1[8]][8]))
-
- 		*(*uint64)(unsafe.Pointer(&b[0])) = *(*uint64)(unsafe.Pointer(&b[0])) ^ *(*uint64)(unsafe.Pointer(&ls_array[9][a1[9]][0]))
-		*(*uint64)(unsafe.Pointer(&b[8])) = *(*uint64)(unsafe.Pointer(&b[8])) ^ *(*uint64)(unsafe.Pointer(&ls_array[9][a1[9]][8]))
-
-		*(*uint64)(unsafe.Pointer(&b[0])) = *(*uint64)(unsafe.Pointer(&b[0])) ^ *(*uint64)(unsafe.Pointer(&ls_array[10][a1[10]][0]))
-		*(*uint64)(unsafe.Pointer(&b[8])) = *(*uint64)(unsafe.Pointer(&b[8])) ^ *(*uint64)(unsafe.Pointer(&ls_array[10][a1[10]][8]))
-
-		*(*uint64)(unsafe.Pointer(&b[0])) = *(*uint64)(unsafe.Pointer(&b[0])) ^ *(*uint64)(unsafe.Pointer(&ls_array[11][a1[11]][0]))
-		*(*uint64)(unsafe.Pointer(&b[8])) = *(*uint64)(unsafe.Pointer(&b[8])) ^ *(*uint64)(unsafe.Pointer(&ls_array[11][a1[11]][8]))
-
-		*(*uint64)(unsafe.Pointer(&b[0])) = *(*uint64)(unsafe.Pointer(&b[0])) ^ *(*uint64)(unsafe.Pointer(&ls_array[12][a1[12]][0]))
-		*(*uint64)(unsafe.Pointer(&b[8])) = *(*uint64)(unsafe.Pointer(&b[8])) ^ *(*uint64)(unsafe.Pointer(&ls_array[12][a1[12]][8]))
-
-		*(*uint64)(unsafe.Pointer(&b[0])) = *(*uint64)(unsafe.Pointer(&b[0])) ^ *(*uint64)(unsafe.Pointer(&ls_array[13][a1[13]][0]))
-		*(*uint64)(unsafe.Pointer(&b[8])) = *(*uint64)(unsafe.Pointer(&b[8])) ^ *(*uint64)(unsafe.Pointer(&ls_array[13][a1[13]][8]))
-
-		*(*uint64)(unsafe.Pointer(&b[0])) = *(*uint64)(unsafe.Pointer(&b[0])) ^ *(*uint64)(unsafe.Pointer(&ls_array[14][a1[14]][0]))
-		*(*uint64)(unsafe.Pointer(&b[8])) = *(*uint64)(unsafe.Pointer(&b[8])) ^ *(*uint64)(unsafe.Pointer(&ls_array[14][a1[14]][8]))
-
-		*(*uint64)(unsafe.Pointer(&b[0])) = *(*uint64)(unsafe.Pointer(&b[0])) ^ *(*uint64)(unsafe.Pointer(&ls_array[15][a1[15]][0]))
-		*(*uint64)(unsafe.Pointer(&b[8])) = *(*uint64)(unsafe.Pointer(&b[8])) ^ *(*uint64)(unsafe.Pointer(&ls_array[15][a1[15]][8]))
+		*(*uint64)(unsafe.Pointer(&b[8])) = *(*uint64)(unsafe.Pointer(&b1[8])) ^
+			*(*uint64)(unsafe.Pointer(&b2[8])) ^
+			*(*uint64)(unsafe.Pointer(&b3[8])) ^
+			*(*uint64)(unsafe.Pointer(&b4[8])) ^
+			*(*uint64)(unsafe.Pointer(&b5[8])) ^
+			*(*uint64)(unsafe.Pointer(&b6[8])) ^
+			*(*uint64)(unsafe.Pointer(&b7[8])) ^
+			*(*uint64)(unsafe.Pointer(&b8[8])) ^
+			*(*uint64)(unsafe.Pointer(&b9[8])) ^
+			*(*uint64)(unsafe.Pointer(&b10[8])) ^
+			*(*uint64)(unsafe.Pointer(&b11[8])) ^
+			*(*uint64)(unsafe.Pointer(&b12[8])) ^
+			*(*uint64)(unsafe.Pointer(&b13[8])) ^
+			*(*uint64)(unsafe.Pointer(&b14[8])) ^
+			*(*uint64)(unsafe.Pointer(&b15[8])) ^
+			*(*uint64)(unsafe.Pointer(&b16[8]))
 
 		// At this point I really wish GO had macro functions
 	}
