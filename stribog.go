@@ -77,7 +77,8 @@ func l_str(a *[64]byte) {
 			}
 		}
 		for k := 0; k < 8; k++ {
-			a[i*8+k] = byte((v & (uint64(0xFF) << (7 - k) * 8)) >> (7 - k) * 8)
+			bitshift := (7 - k) * 8
+			a[i*8+k] = byte((v & (uint64(0xFF) << bitshift)) >> bitshift)
 		}
 	}
 }
@@ -120,12 +121,13 @@ func gn(N, h, m *[64]byte) {
 
 	tmp = K
 	xx512(&tmp, *m)
-	xx512(&tmp, K)
+	//xx512(&tmp, K)
 
 	for i := 0; i < 12; i++ {
 		s_str(&tmp)
 		p(&tmp)
 		l_str(&tmp)
+
 		xx512(&K, C[i])
 		s_str(&K)
 		p(&K)
@@ -163,8 +165,8 @@ func hash(hash [64]byte, msg []byte, ) [64]byte {
 	}
 
 	gn(&N, &hash, &m)
-	v512[63] = byte((len(msg) / 8) & 0xff)
-	v512[62] = byte((len(msg) / 8) >> 8)
+	v512[63] = byte((len(msg) * 8) & 0xff)
+	v512[62] = byte((len(msg) * 8) >> 8)
 	Add(&N, &v512)
 	Add(&Eps, &m)
 
@@ -194,9 +196,9 @@ func Hash32(msg []byte) [32]byte {
 func main() {
 	var data = "323130393837363534333231303938373635343332313039383736353433323130393837363534333231303938373635343332313039383736353433323130"
 	dataSlice, _ := hex.DecodeString(data)
-	//hash32 := Hash32(dataSlice)
+	hash32 := Hash32(dataSlice)
 	hash64 := Hash64(dataSlice)
 
-	//fmt.Println("Hash32(" + data + ") = " + hex.EncodeToString(hash32[:]) + "\n")
+	fmt.Println("Hash32(" + data + ") = " + hex.EncodeToString(hash32[:]) + "\n")
 	fmt.Println("Hash64(" + data + ") = " + hex.EncodeToString(hash64[:]) + "\n")
 }
